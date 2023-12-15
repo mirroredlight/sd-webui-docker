@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    stop_signal: SIGKILL
+    ports:
+      - ${PORT}:7860
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: ${GPU_DRIVER}
+            device_ids: ['0']
+            capabilities: [gpu]
+    command: ${COMMANDLINE_ARGS}
+    volumes:
+      - ${EMBEDDINGS_DIR}:/var/www/stable-diffusion-webui/embeddings
+      - ${EXTENSIONS_DIR}:/var/www/stable-diffusion-webui/extensions
+      - ${MODELS_DIR}:/var/www/stable-diffusion-webui/models
+      - ${OUTPUT_DIR}:/var/www/stable-diffusion-webui/outputs
+      - ${SETTINGS_DIR}/config.json:/var/www/stable-diffusion-webui/config.json
+      - ${SETTINGS_DIR}/ui-config.json:/var/www/stable-diffusion-webui/ui-config.json
