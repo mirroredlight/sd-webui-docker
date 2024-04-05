@@ -6,12 +6,14 @@ RUN apt update && \
 ;
 
 WORKDIR /var/www
-RUN useradd -ms /bin/bash worker
+RUN useradd -ms /bin/bash -u 1500 worker
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 RUN chown -R worker /var/www
 
-RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
-
+USER worker
 WORKDIR /var/www/stable-diffusion-webui
 #RUN ./webui.sh --exit --no-download-sd-model
+
+ENV VENV_DIR=-
 
 ENTRYPOINT [ "./webui.sh" ]
